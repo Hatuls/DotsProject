@@ -16,6 +16,11 @@ public class EnemyShootingSystem : ComponentSystem
 
     protected override void OnUpdate()
     {
+        if (GameManager.IsDots == false)
+            return;
+
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex != 2 || EntityHandler.Instance == null)
+            return;
         float3 offset = new float3 ( 0, 0, -1f );
         float deltaTime = Time.DeltaTime;
         EnemyBullet = EntityHandler.EnemyBullet;

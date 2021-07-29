@@ -12,6 +12,12 @@ public class PowerUpDestructionSystem : ComponentSystem
 
     private void PowerUpSystem()
     {
+        if (GameManager.IsGameOver() )
+            return;
+
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex != 2)
+        return;
+
         float3 playerPos = PlayerManager.Body.position;
 
         Entities.WithAll<PowerUpTag>().ForEach((Entity powerUp, ref Translation powerUpPos, ref PowerUpData type) => {

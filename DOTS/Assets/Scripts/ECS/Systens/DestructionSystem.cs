@@ -11,6 +11,8 @@ public class DestructionSystem : ComponentSystem
     {
             if (GameManager.IsGameOver())
             return;
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex != 2 || EntityHandler.Instance ==null)
+            return;
 
         if ((UnityEngine.Vector3)playerPos != PlayerManager.Body.position)
          playerPos = PlayerManager.Body.position;

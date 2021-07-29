@@ -7,6 +7,10 @@ public class EnemyBulletDestructionSystem : ComponentSystem
     float offset = 4f;
     protected override void OnUpdate()
     {
+        if (GameManager.IsGameOver() )
+            return;
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex != 2 || EntityHandler.Instance == null)
+            return;
         float3 playerPos = PlayerManager.Body.position;
 
         Entities.WithAll<EnemyBulletTag>().ForEach((Entity bullet, ref Translation bulletPos)

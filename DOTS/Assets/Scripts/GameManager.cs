@@ -1,18 +1,23 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Entities;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField] InputManager _inputManager;
-    [SerializeField]
-    bool isGameOver;
+
+  static  bool isGameOver;
     public static GameManager Instance;
 
+
+
+    public static bool IsDots;
     private void Awake()
     {
         Instance = this;
+      
     }
 
 
@@ -23,7 +28,7 @@ public class GameManager : MonoBehaviour
 
 
     public static bool IsGameOver()
-    => Instance.isGameOver;
+    => isGameOver;
 
     internal static void EndGame()
     {
@@ -32,11 +37,16 @@ public class GameManager : MonoBehaviour
         UIManager.GameOverUI();
         EntityHandler.ResetEntities();
         Instance._inputManager.EnableInput = false;
-        Instance.isGameOver = true;
+        isGameOver = true;
     }
 
-    internal static void AddScore(byte bonus)
+    internal static void SetEntityWorld()
     {
-        throw new NotImplementedException();
+      //  entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+    }
+
+    internal static void SetEntityWorld(Action p)
+    {
+        p?.Invoke();
     }
 }

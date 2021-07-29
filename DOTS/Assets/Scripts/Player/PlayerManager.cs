@@ -155,8 +155,14 @@ public class PlayerShootings
         Debug.Log("Shootings");
         if (CanShoot)
         {
-          EntityHandler.Instance.SpawnPlayerBullet(_currentWeapon, Quaternion.identity, WeaponLevel);
-          CanShoot = false;
+            if (GameManager.IsDots)
+            {
+                BulletInstantiateEvent.RaiseEvent(_currentWeapon, Quaternion.identity, WeaponLevel);
+            }
+            else
+                BulletManager.Instance.DeployBullet(true, _currentWeapon, Vector3.forward, _transform.position, WeaponLevel);
+
+            CanShoot = false;
         }
     }
   public void  CheckShootingCooldown() 
@@ -203,7 +209,7 @@ public class PlayerMovement
     }
 
     public void VerticalMovement(float value)
-    {
+     {
         if (VerticalMovementCondition(value))
             _transform.Translate(Vector3.forward * value * (_playerSettings.VerticalSpeed+ SpeedBuffer) * Time.deltaTime);
     }

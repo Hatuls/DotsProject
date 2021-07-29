@@ -14,7 +14,8 @@ public class WaveManager : MonoBehaviour
     }
     private void Start()
     {
-        EntityHandler.Instance.SpawnWave(spawnWaves[currentWave]);
+        SpawnWaveEvent.Event.Invoke(spawnWaves[currentWave]);
+     
         timer = 0;
 
     }
@@ -31,7 +32,8 @@ public class WaveManager : MonoBehaviour
             currentWave++;
             if (currentWave >= spawnWaves.Length)
                 currentWave = 0;
-            EntityHandler.Instance.SpawnWave(spawnWaves[currentWave]);
+          
+            SpawnWaveEvent.Event.Invoke(spawnWaves[currentWave]);
             timer = 0;
             timeBetweenWaves -= reduceTimer;
             if (timeBetweenWaves <1)

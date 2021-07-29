@@ -6,11 +6,12 @@ using Unity.Rendering;
 using Unity.Mathematics;
 using System;
 
-public class EntityHandler : MonoBehaviour
+public class EntityHandler :MonoBehaviour
 {
 
 
     public static EntityHandler Instance;
+    
     private EntityManager _entityManager;
     [SerializeField] private GameObject _enemyPrefab;
 
@@ -36,35 +37,44 @@ public class EntityHandler : MonoBehaviour
     private Entity _enemyProjectileEntitiyPrefab;
 
     public static Entity EnemyBullet => Instance._enemyProjectileEntitiyPrefab;
+    private void OnDestroy()
+    {
+
+        SpawnWaveEvent.Event -= SpawnWave;
+        BulletInstantiateEvent.Event -= SpawnPlayerBullet;
+    }
     private void Awake()
     {
-        Instance = this;   
-
-        _entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
-
-        var settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, null);
-
-        _enemyEntitiyPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(_enemyPrefab, settings);
-
-        _projectileEntitiyPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(_projectilePrefab, settings);
-
-        _powerUpEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(_powerUpPrefab, settings);
-
-
-        _enemyProjectileEntitiyPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(_enemyBullet, settings);
+        Init();
     }
-
-    private void Start()
+    public void Init()
     {
-       
+     
+        BulletInstantiateEvent.Event += SpawnPlayerBullet;
+        SpawnWaveEvent.Event += SpawnWave;
+        Instance = this;
+        
+            _entityManager =World.DefaultGameObjectInjectionWorld.EntityManager;
+            var settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, null);
 
-        // normal Instantiation of an entity
-        //     _entityManager.Instantiate(_enemyEntitiyPrefab);
-       // SpawnWave(RoadManager.Instance.GetRoadPoint(0));
+            _enemyEntitiyPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(_enemyPrefab, settings);
+
+            _projectileEntitiyPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(_projectilePrefab, settings);
+
+            _powerUpEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(_powerUpPrefab, settings);
+
+
+            _enemyProjectileEntitiyPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(_enemyBullet, settings);
+      
     }
+
+
 
     public void SpawnWave(SpawnWave spawnWave)
     {
+        if (GameManager.IsDots == false)
+            return;
+
         NativeArray<Entity> enemyArray = new NativeArray<Entity>(spawnWave.Amount, Allocator.Temp);
 
         float3 direction = math.normalize(spawnWave.Road.Points[1] - spawnWave.Road.Points[0]);
@@ -144,6 +154,8 @@ new EnemyShootingSpeed
 
     public void SpawnPlayerBullet(Weapon weapon,quaternion quaternion, int currentLevel)
     {
+        if (GameManager.IsDots == false)
+            return;
         switch (weapon.WeaponType)
         {
             case Weapon.WeaponTypeEnum.Projectile:
@@ -161,6 +173,8 @@ new EnemyShootingSpeed
 
     private void SpawnProjectile(ProjectileWeapon weapon, quaternion quaternion, int currentLevel)
     {
+        if (GameManager.IsDots == false)
+            return;
         NativeArray<Entity> bullets = new NativeArray<Entity>(currentLevel, Allocator.Temp);
         for (int i = 0; i < bullets.Length; i++)
         {
@@ -199,6 +213,8 @@ new EnemyShootingSpeed
 
     public static void CreatePowerUpEntity(PowerUpManager.PowerUpType type, float3 Position)
     {
+        if (GameManager.IsDots == false)
+            return;
         var powerUp = Instance._entityManager.Instantiate(Instance._powerUpEntity);
 
 
@@ -224,6 +240,8 @@ new EnemyShootingSpeed
 
     public Material GetPowerUpMaterial(PowerUpManager.PowerUpType type)
     {
+        if (GameManager.IsDots == false)
+            return null;
         switch (type)
         {
 
